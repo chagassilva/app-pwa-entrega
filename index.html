@@ -33,123 +33,78 @@
       .hidden-screen {
         display: none !important;
       }
+
+      .h-80 {
+    height: 100vh !important;
+}
     </style>
   </head>
   <body class="bg-gray-100 text-slate-800 min-h-screen pb-10">
+    
     <!-- ==========================================
-         TELA DE LOGIN
+         TELA DE LOGIN (RESPONSIVIDADE AJUSTADA)
     =========================================== -->
-    <!-- ==========================================
-         TELA DE LOGIN (DESIGN PREMIUM)
-    =========================================== -->
-    <!-- ==========================================
-         TELA DE LOGIN (DESIGN MOBILE FIRST)
-    =========================================== -->
-    <div
-      id="tela-login"
-      class="min-h-[100dvh] flex flex-col justify-center bg-slate-50 relative overflow-hidden"
-    >
-      <!-- Fundo Superior Decorativo -->
-      <div
-        class="absolute top-0 w-full h-64 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 rounded-b-[40px] shadow-inner"
-      >
-        <!-- Efeito de luz sutil -->
-        <div
-          class="absolute top-[-20%] left-[-10%] w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"
-        ></div>
-      </div>
-
-      <!-- Cartão de Login (Sobreposto) -->
-      <div
-        class="bg-white p-6 sm:p-10 rounded-[32px] shadow-xl w-[90%] max-w-md mx-auto text-center relative z-10 border border-slate-100 mt-12"
-      >
-        <!-- Logo Flutuante (Efeito 3D quebrando a borda) -->
-        <div
-          class="mx-auto mb-2 flex justify-center bg-white p-4 rounded-3xl shadow-sm border border-slate-50 w-max transform -translate-y-16"
-        >
-          <img
-            src="https://portfolio.chagassilva.com/wp-content/uploads/2026/02/logo_sem_background.png"
-            alt="TLD Distribuidora"
-            class="h-14 w-auto object-contain drop-shadow-sm"
-          />
+    <div id="tela-login" class="min-h-[100dvh] flex flex-col justify-center items-center bg-slate-50 relative overflow-hidden px-4">
+        
+        <!-- Fundo Decorativo -->
+        <!-- No mobile: altura de 320px (h-80). No desktop: tela inteira (md:h-full) -->
+        <div class="absolute top-0 left-0 w-full h-80 md:h-full bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 rounded-b-[3rem] md:rounded-none shadow-inner transition-all duration-500">
+            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-30 md:opacity-20"></div>
+            <div class="hidden md:block absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
         </div>
 
-        <!-- Título ajustado pela margem negativa da logo -->
-        <div class="-mt-10 mb-8">
-          <h1 class="text-[26px] font-black text-slate-800 tracking-tight">
-            Bem-vindo(a)
-          </h1>
-          <p class="text-sm text-slate-500 font-medium mt-1">
-            Acesse sua rota de hoje
-          </p>
-        </div>
-
-        <!-- Input: Nome do Motorista -->
-        <div class="text-left mb-5 relative">
-          <label
-            class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2"
-            >Selecione seu nome</label
-          >
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none"
-            >
-              <i class="fa-solid fa-user text-slate-400"></i>
+        <!-- Cartão de Login -->
+        <div class="bg-white px-6 pb-8 pt-16 sm:px-10 rounded-[32px] shadow-2xl w-full max-w-md text-center relative z-10 mt-12 md:mt-0">
+            
+            <!-- Logo Flutuante -->
+            <div class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-white w-28 h-28 flex items-center justify-center rounded-3xl shadow-xl border-[6px] border-white">
+                <img src="https://portfolio.chagassilva.com/wp-content/uploads/2026/02/logo_sem_background.png" alt="TLD Distribuidora" class="w-20 h-auto object-contain drop-shadow-sm">
             </div>
-            <!-- text-base é vital no mobile para evitar auto-zoom -->
-            <select
-              id="select-motorista"
-              class="w-full bg-slate-50/50 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-10 outline-none transition-all appearance-none text-base"
-            >
-              <option value="" disabled selected>Buscando motoristas...</option>
-            </select>
-            <!-- Setinha Customizada -->
-            <div
-              class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
-            >
-              <i class="fa-solid fa-chevron-down text-slate-400 text-sm"></i>
+            
+            <!-- Título -->
+            <div class="mb-8 mt-2">
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Bem-vindo(a)</h1>
+                <p class="text-sm text-slate-500 font-medium mt-1">Acesse sua rota de hoje</p>
             </div>
-          </div>
-        </div>
 
-        <!-- Input: Senha -->
-        <div class="text-left mb-8 relative">
-          <label
-            class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2"
-            >Senha de acesso</label
-          >
-          <div class="relative">
-            <div
-              class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none"
-            >
-              <i class="fa-solid fa-lock text-slate-400"></i>
+            <!-- Input: Nome do Motorista -->
+            <div class="text-left mb-5 relative">
+                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2">Selecione seu nome</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <i class="fa-solid fa-user text-slate-400"></i>
+                    </div>
+                    <select id="select-motorista" class="w-full bg-slate-50/80 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-10 outline-none transition-all appearance-none text-base cursor-pointer">
+                        <option value="" disabled selected>Buscando motoristas...</option>
+                    </select>
+                    <!-- Setinha Customizada -->
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-sm"></i>
+                    </div>
+                </div>
             </div>
-            <input
-              type="password"
-              id="input-senha"
-              placeholder="••••••••"
-              class="w-full bg-slate-50/50 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-4 outline-none transition-all text-base tracking-[0.2em]"
-            />
-          </div>
+            
+            <!-- Input: Senha -->
+            <div class="text-left mb-8 relative">
+                <label class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2">Senha de acesso</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <i class="fa-solid fa-lock text-slate-400"></i>
+                    </div>
+                    <input type="password" id="input-senha" placeholder="••••••••" class="w-full bg-slate-50/80 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-4 outline-none transition-all text-base tracking-[0.2em]">
+                </div>
+            </div>
+
+            <!-- Botão de Acesso -->
+            <button onclick="fazerLogin()" class="w-full text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-2xl text-[17px] px-5 py-4 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.97] flex items-center justify-center gap-2 h-14">
+                Entrar na Rota <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
         </div>
-
-        <!-- Botão de Acesso -->
-        <button
-          onclick="fazerLogin()"
-          class="w-full text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-2xl text-[17px] px-5 py-4.5 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.97] flex items-center justify-center gap-2 h-14"
-        >
-          Entrar na Rota <i class="fa-solid fa-arrow-right ml-1"></i>
-        </button>
-      </div>
-
-      <!-- Rodapé do App -->
-      <div class="text-center mt-8 relative z-10 pb-6">
-        <p
-          class="text-[11px] text-slate-400 font-bold uppercase tracking-widest"
-        >
-          Hub TLD &copy; 2026
-        </p>
-      </div>
+        
+        <!-- Rodapé do App -->
+        <div class="text-center mt-10 relative z-10 pb-4">
+            <p class="text-[11px] text-slate-400 md:text-blue-200/70 font-bold uppercase tracking-widest transition-colors duration-500">Hub TLD &copy; 2026</p>
+        </div>
     </div>
 
     <!-- ==========================================
@@ -181,7 +136,7 @@
         </div>
         <!-- Imagem do Perfil agora puxa a foto real -->
         <img
-          src=""
+          src=""<
           id="fotoMotoristaHeader"
           class="w-14 h-14 rounded-full border-2 border-slate-200 shadow-sm object-cover bg-slate-200"
           alt="Avatar"
