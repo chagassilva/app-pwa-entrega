@@ -21,44 +21,37 @@
 
     <style>
       body {
-        font-family: "Segoe UI", sans-serif;
-        -webkit-tap-highlight-color: transparent;
-      }
-      .loader-page {
-        text-align: center;
-        padding: 40px 20px;
-        color: #64748b;
-        font-weight: bold;
-      }
-      .hidden-screen {
-        display: none !important;
-      }
-
-      .h-80 {
-    height: 100vh !important;
-}
-
-.max-w-md {
-    max-width: 100vw !important;
-}
+       font-family: "Segoe UI", sans-serif; -webkit-tap-highlight-color: transparent; }
+      .loader-page { text-align: center; padding: 40px 20px; color: #64748b; font-weight: bold; }
+      .hidden-screen { display: none !important; }
     </style>
+
+
+
   </head>
   <body class="bg-gray-100 text-slate-800 min-h-screen pb-10">
     
     <!-- ==========================================
          TELA DE LOGIN (RESPONSIVIDADE AJUSTADA)
     =========================================== -->
-    <div id="tela-login" class="min-h-[100dvh] flex flex-col justify-center items-center bg-slate-50 relative overflow-hidden px-4">
+    <div id="tela-login" class="min-h-[100dvh] flex flex-col md:justify-center md:items-center bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 md:bg-none md:bg-slate-50 relative overflow-hidden">
         
-        <!-- Fundo Decorativo -->
-        <!-- No mobile: altura de 320px (h-80). No desktop: tela inteira (md:h-full) -->
-        <div class="absolute top-0 left-0 w-full h-80 md:h-full bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 rounded-b-[3rem] md:rounded-none shadow-inner transition-all duration-500">
-            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-30 md:opacity-20"></div>
-            <div class="hidden md:block absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
+        <!-- Fundo Decorativo (Apenas Desktop) -->
+        <div class="hidden md:block absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 shadow-inner transition-all duration-500">
+            <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20"></div>
         </div>
 
-        <!-- Cartão de Login -->
-        <div class="bg-white px-6 pb-8 pt-16 sm:px-10 rounded-[32px] shadow-2xl w-full max-w-md text-center relative z-10 mt-12 md:mt-0">
+        <!-- Efeito de Luz Mobile (Topo) -->
+        <div class="md:hidden absolute top-0 left-0 w-full h-1/2 overflow-hidden pointer-events-none z-0">
+             <div class="absolute top-[-20%] left-[-20%] w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+        </div>
+
+        <!-- Espaçador invisível para empurrar o cartão para baixo no mobile -->
+        <div class="flex-grow md:hidden z-0"></div>
+
+        <!-- Cartão de Login (Colado embaixo no Mobile / Centralizado no Desktop) -->
+        <div class="bg-white w-full md:max-w-md px-6 pb-8 pt-16 sm:px-10 rounded-t-[40px] md:rounded-[32px] shadow-[0_-15px_40px_rgba(0,0,0,0.2)] md:shadow-2xl text-center relative z-10 mt-20 md:mt-0 transition-all duration-500">
             
             <!-- Logo Flutuante -->
             <div class="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-white w-28 h-28 flex items-center justify-center rounded-3xl shadow-xl border-[6px] border-white">
@@ -81,7 +74,6 @@
                     <select id="select-motorista" class="w-full bg-slate-50/80 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-10 outline-none transition-all appearance-none text-base cursor-pointer">
                         <option value="" disabled selected>Buscando motoristas...</option>
                     </select>
-                    <!-- Setinha Customizada -->
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                         <i class="fa-solid fa-chevron-down text-slate-400 text-sm"></i>
                     </div>
@@ -103,11 +95,16 @@
             <button onclick="fazerLogin()" class="w-full text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-2xl text-[17px] px-5 py-4 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.97] flex items-center justify-center gap-2 h-14">
                 Entrar na Rota <i class="fa-solid fa-arrow-right ml-1"></i>
             </button>
+            
+            <!-- Rodapé embutido no cartão no mobile -->
+            <div class="text-center mt-6 md:hidden">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Hub TLD &copy; 2026</p>
+            </div>
         </div>
         
-        <!-- Rodapé do App -->
-        <div class="text-center mt-10 relative z-10 pb-4">
-            <p class="text-[11px] text-slate-400 md:text-blue-200/70 font-bold uppercase tracking-widest transition-colors duration-500">Hub TLD &copy; 2026</p>
+        <!-- Rodapé do App (Apenas Desktop) -->
+        <div class="hidden md:block text-center mt-8 relative z-10 pb-4">
+            <p class="text-[11px] text-blue-200/70 font-bold uppercase tracking-widest">Hub TLD &copy; 2026</p>
         </div>
     </div>
 
