@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Painel de Entregas - TLD PWA</title>
+    <meta name="theme-color" content="#f3f4f6" />
+
+    <link rel="manifest" href="manifest.json" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .loader-page {
+        text-align: center;
+        padding: 40px 20px;
+        color: #64748b;
+        font-weight: bold;
+      }
+      .hidden-screen {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-slate-800 min-h-screen pb-10">
+    <!-- ==========================================
+         TELA DE LOGIN
+    =========================================== -->
+    <!-- ==========================================
+         TELA DE LOGIN (DESIGN PREMIUM)
+    =========================================== -->
+    <div
+      id="tela-login"
+      class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 relative overflow-hidden"
+    >
+      <!-- Efeitos de luz no fundo (Ambient Glow) -->
+      <div
+        class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-emerald-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20"
+      ></div>
+
+      <!-- Cartão de Login -->
+      <div
+        class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-md text-center relative z-10 border border-slate-100"
+      >
+        <!-- Logo Oficial TLD -->
+        <div class="mx-auto mb-6 flex justify-center">
+          <img
+            src="https://portfolio.chagassilva.com/wp-content/uploads/2026/02/logo_sem_background.png"
+            alt="TLD Distribuidora"
+            class="h-16 object-contain drop-shadow-md"
+          />
+        </div>
+
+        <h1 class="text-2xl font-black text-slate-800 mb-2 tracking-tight">
+          Portal do Motorista
+        </h1>
+        <p class="text-sm text-slate-500 mb-8 font-medium">
+          Faça login para acessar sua rota de hoje
+        </p>
+
+        <!-- Input: Nome do Motorista -->
+        <div class="text-left mb-5 relative">
+          <label
+            class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1"
+            >Selecione seu nome</label
+          >
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none"
+            >
+              <i class="fa-solid fa-user text-slate-400"></i>
+            </div>
+            <select
+              id="select-motorista"
+              class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3.5 pl-11 outline-none transition-all appearance-none"
+            >
+              <option value="" disabled selected>Buscando motoristas...</option>
+            </select>
+            <!-- Ícone customizado da setinha do Select -->
+            <div
+              class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
+            >
+              <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input: Senha -->
+        <div class="text-left mb-8 relative">
+          <label
+            class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1"
+            >Senha de acesso</label
+          >
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none"
+            >
+              <i class="fa-solid fa-lock text-slate-400"></i>
+            </div>
+            <input
+              type="password"
+              id="input-senha"
+              placeholder="••••••••"
+              class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3.5 pl-11 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- Botão de Acesso -->
+        <button
+          onclick="fazerLogin()"
+          class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-bold rounded-xl text-lg px-5 py-4 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          Acessar Minha Rota <i class="fa-solid fa-arrow-right-to-bracket"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TELA DO PAINEL (APP PRINCIPAL)
+    =========================================== -->
+    <div id="tela-app" class="hidden-screen">
+      <header
+        class="flex justify-between items-center p-5 bg-white shadow-sm mb-4 rounded-b-2xl sticky top-0 z-50"
+      >
+        <div class="flex flex-col">
+          <span id="texto-saudacao" class="text-xs text-gray-500"
+            >Boa noite,</span
+          >
+          <h2 id="nomeMotoristaHeader" class="text-xl font-bold text-slate-700">
+            Carregando...
+          </h2>
+          <button
+            onclick="sairDaConta()"
+            class="mt-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1.5 px-4 rounded transition-colors w-max shadow-sm"
+          >
+            Sair
+          </button>
+          <span
+            id="badge-offline"
+            class="hidden mt-2 bg-red-100 text-red-700 text-[10px] font-bold py-1 px-2 rounded w-max border border-red-200"
+          >
+            <i class="fa-solid fa-wifi-slash"></i> OFFLINE (Salvando no celular)
+          </span>
+        </div>
+        <!-- Imagem do Perfil agora puxa a foto real -->
+        <img
+          src=""
+          id="fotoMotoristaHeader"
+          class="w-14 h-14 rounded-full border-2 border-slate-200 shadow-sm object-cover bg-slate-200"
+          alt="Avatar"
+        />
+      </header>
+
+      <main class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div
+            id="btn-filtro-total"
+            class="cursor-pointer bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm transition-transform active:scale-95"
+          >
+            <span
+              id="countTotal"
+              class="block text-2xl font-bold text-slate-700"
+              >0</span
+            >
+            <span class="text-[10px] font-bold text-gray-400 tracking-wider"
+              >TOTAL</span
+            >
+          </div>
+          <div
+            id="btn-filtro-pendentes"
+            class="cursor-pointer bg-blue-50 border border-blue-300 rounded-xl p-3 text-center shadow-sm transition-transform active:scale-95"
+          >
+            <span
+              id="countPendentes"
+              class="block text-2xl font-bold text-blue-600"
+              >0</span
+            >
+            <span class="text-[10px] font-bold text-blue-500 tracking-wider"
+              >PENDENTES</span
+            >
+          </div>
+          <div
+            id="btn-filtro-entregues"
+            class="cursor-pointer bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm transition-transform active:scale-95"
+          >
+            <span
+              id="countEntregues"
+              class="block text-2xl font-bold text-slate-700"
+              >0</span
+            >
+            <span class="text-[10px] font-bold text-gray-400 tracking-wider"
+              >ENTREGUES</span
+            >
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-4 px-1">
+          <h2 id="titulo-rota" class="text-lg font-bold text-slate-700">
+            Sua Rota de Hoje (Pendentes)
+          </h2>
+          <i class="fa-solid fa-route text-blue-500 text-xl"></i>
+        </div>
+
+        <div id="listaEntregas" class="space-y-4"></div>
+      </main>
+    </div>
+
+    <script>
+      const API_WEBHOOK_N8N =
+        "https://n8n.chagassilva.com/webhook/entrega_retira_roteador";
+      // COLOQUE SUA URL AQUI
+      const GAS_WEBAPP_URL =
+        "https://script.google.com/macros/s/AKfycbyBPHTloAYArUZ3LpT9CnAvLONCgfTBK0mtDUScaPDvD6swwa_POpPLbZQFuDhXAehNsw/exec";
+
+      let dadosSessao = null;
+      let pacotesDoDia = [];
+      let filtroAtual = "pendentes";
+      let motoristasCadastrados = []; // Array para guardar os dados e validar a senha
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("sw.js")
+            .catch((err) => console.error("Erro SW:", err));
+        });
+      }
+
+      window.addEventListener("online", sincronizarFilaOffline);
+      window.addEventListener("offline", () => {
+        document.getElementById("badge-offline").classList.remove("hidden");
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        verificarSessao();
+        configurarBotoesFiltro();
+      });
+
+      // ==========================================
+      // LÓGICA DE LOGIN COM SENHA
+      // ==========================================
+      function verificarSessao() {
+        const sessaoSalva = localStorage.getItem("sessao_motorista");
+
+        if (sessaoSalva) {
+          dadosSessao = JSON.parse(sessaoSalva);
+          document.getElementById("tela-login").classList.add("hidden-screen");
+          document.getElementById("tela-app").classList.remove("hidden-screen");
+          iniciarPainel();
+        } else {
+          document.getElementById("tela-app").classList.add("hidden-screen");
+          document
+            .getElementById("tela-login")
+            .classList.remove("hidden-screen");
+          carregarListaMotoristasLogin();
+        }
+      }
+
+      function carregarListaMotoristasLogin() {
+        const select = document.getElementById("select-motorista");
+
+        fetch(`${GAS_WEBAPP_URL}?acao=listar_motoristas`)
+          .then((res) => res.json())
+          .then((motoristas) => {
+            if (motoristas && motoristas.length > 0) {
+              motoristasCadastrados = motoristas; // Guarda os objetos completos
+              select.innerHTML =
+                '<option value="" disabled selected>Escolha seu nome...</option>';
+              motoristas.forEach((m) => {
+                if (m.nome) {
+                  const nome =
+                    m.nome.trim().charAt(0).toUpperCase() +
+                    m.nome.trim().slice(1).toLowerCase();
+                  select.innerHTML += `<option value="${m.nome.toLowerCase()}">${nome}</option>`;
+                }
+              });
+            }
+          })
+          .catch((err) => {
+            console.error("Erro na API:", err);
+            select.innerHTML = `<option value="" disabled selected>Falha ao carregar API...</option>`;
+          });
+      }
+
+      function fazerLogin() {
+        const motoristaEscolhido =
+          document.getElementById("select-motorista").value;
+        const senhaDigitada = document.getElementById("input-senha").value;
+
+        if (!motoristaEscolhido)
+          return Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "warning",
+            title: "Selecione seu nome!",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        if (!senhaDigitada)
+          return Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "warning",
+            title: "Digite sua senha!",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+
+        // Valida a senha procurando o motorista no array salvo
+        const motoristaValido = motoristasCadastrados.find(
+          (m) =>
+            m.nome.toLowerCase() === motoristaEscolhido.toLowerCase() &&
+            m.senha === senhaDigitada,
+        );
+
+        if (motoristaValido) {
+          const nomeFormatado =
+            motoristaValido.nome.charAt(0).toUpperCase() +
+            motoristaValido.nome.slice(1).toLowerCase();
+
+          // Salva o nome e a FOTO na sessão!
+          dadosSessao = {
+            nome: nomeFormatado,
+            foto:
+              motoristaValido.foto ||
+              `https://ui-avatars.com/api/?name=${nomeFormatado}&background=cbd5e1&color=334155&bold=true`,
+          };
+
+          localStorage.setItem("sessao_motorista", JSON.stringify(dadosSessao));
+
+          Swal.fire({
+            title: "Acesso Liberado!",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          setTimeout(() => {
+            Swal.close();
+            document.getElementById("input-senha").value = ""; // Limpa o campo
+            verificarSessao();
+          }, 800);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Acesso Negado",
+            text: "Senha incorreta!",
+            confirmButtonColor: "#ef4444",
+            customClass: { popup: "rounded-xl" },
+          });
+        }
+      }
+
+      function sairDaConta() {
+        Swal.fire({
+          title: "Sair do aplicativo?",
+          text: "Você precisará fazer login novamente para acessar a rota de hoje.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ef4444", // Vermelho para a ação de sair
+          cancelButtonColor: "#94a3b8", // Cinza para cancelar
+          confirmButtonText:
+            '<i class="fa-solid fa-arrow-right-from-bracket mr-1"></i> Sim, sair',
+          cancelButtonText: "Cancelar",
+          customClass: { popup: "rounded-xl" },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Dispara o modal de carregamento idêntico ao do login
+            Swal.fire({
+              title: "Encerrando sessão...",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+
+            // Aguarda 800ms para dar o efeito visual, limpa o cofre e recarrega
+            setTimeout(() => {
+              localStorage.removeItem("sessao_motorista");
+              localStorage.removeItem("cache_rotas_hoje");
+              window.location.reload();
+            }, 800);
+          }
+        });
+      }
+
+      // ==========================================
+      // LÓGICA DO PAINEL DE ROTAS
+      // ==========================================
+      function iniciarPainel() {
+        if (!navigator.onLine)
+          document.getElementById("badge-offline").classList.remove("hidden");
+
+        const horaAtual = new Date().getHours();
+        let saudacao = "Boa noite";
+        if (horaAtual >= 5 && horaAtual < 12) saudacao = "Bom dia";
+        else if (horaAtual >= 12 && horaAtual < 18) saudacao = "Boa tarde";
+        document.getElementById("texto-saudacao").textContent = `${saudacao},`;
+
+        document.getElementById("nomeMotoristaHeader").textContent =
+          dadosSessao.nome;
+        // Carrega a foto real que foi puxada do Google Sheets
+        document.getElementById("fotoMotoristaHeader").src = dadosSessao.foto;
+
+        buscarEntregasDoN8N();
+      }
+
+      function buscarEntregasDoN8N(veioDoPusher = false) {
+        if (!navigator.onLine) {
+          const cache = localStorage.getItem("cache_rotas_hoje");
+          if (cache) {
+            pacotesDoDia = JSON.parse(cache);
+            atualizarContadores();
+            renderizarLista();
+            return;
+          }
+        }
+
+        if (!veioDoPusher) {
+          document.getElementById("listaEntregas").innerHTML =
+            `<div class="loader-page"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-blue-500"></i><br>Atualizando rota...</div>`;
+        }
+
+        fetch(API_WEBHOOK_N8N, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            origem: "app_motorista_v2",
+            acao: "listar_pedidos",
+            motorista: dadosSessao.nome,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const hoje = new Date(
+              new Date().toLocaleString("en-US", {
+                timeZone: "America/Fortaleza",
+              }),
+            );
+            const dataHojeSegura = `${String(hoje.getDate()).padStart(2, "0")}/${String(hoje.getMonth() + 1).padStart(2, "0")}/${hoje.getFullYear()}`;
+
+            pacotesDoDia = data.filter(
+              (pedido) =>
+                pedido.data_envio &&
+                pedido.data_envio.trim() === dataHojeSegura,
+            );
+
+            localStorage.setItem(
+              "cache_rotas_hoje",
+              JSON.stringify(pacotesDoDia),
+            );
+            atualizarContadores();
+            renderizarLista();
+
+            if (veioDoPusher) {
+              Swal.close();
+              Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: "Rota sincronizada!",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+              });
+            }
+          })
+          .catch((err) => {
+            if (veioDoPusher) Swal.close();
+            document.getElementById("listaEntregas").innerHTML =
+              `<div class="loader-page text-red-500"><i class="fa-solid fa-triangle-exclamation text-3xl mb-2"></i><br>Erro de conexão.</div>`;
+          });
+      }
+
+      function atualizarContadores() {
+        let pendentes = 0,
+          entregues = 0;
+        pacotesDoDia.forEach((entrega) => {
+          if (!entrega.numero_danfe && !entrega.id_entrega) return;
+          let status = entrega.status_danfe
+            ? entrega.status_danfe
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim()
+            : "pendente";
+          if (status === "entrega concluida") entregues++;
+          else pendentes++;
+        });
+        document.getElementById("countTotal").textContent = pacotesDoDia.length;
+        document.getElementById("countPendentes").textContent = pendentes;
+        document.getElementById("countEntregues").textContent = entregues;
+      }
+
+      function renderizarLista() {
+        const container = document.getElementById("listaEntregas");
+        container.innerHTML = "";
+
+        if (
+          pacotesDoDia.length === 0 ||
+          (pacotesDoDia.length === 1 &&
+            Object.keys(pacotesDoDia[0]).length === 0)
+        ) {
+          container.innerHTML = `<div class="loader-page"><i class="fa-solid fa-box-open text-4xl mb-3 text-gray-400"></i><br>Nenhuma entrega na rota de hoje!</div>`;
+          return;
+        }
+
+        const listaFiltrada = pacotesDoDia.filter((entrega) => {
+          if (!entrega.numero_danfe && !entrega.id_entrega) return false;
+          let statusOriginal = entrega.status_danfe
+            ? entrega.status_danfe
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim()
+            : "pendente";
+          let isEntregue = statusOriginal === "entrega concluida";
+          if (filtroAtual === "total") return true;
+          if (filtroAtual === "pendentes") return !isEntregue;
+          if (filtroAtual === "entregues") return isEntregue;
+        });
+
+        if (listaFiltrada.length === 0) {
+          container.innerHTML = `<div class="loader-page"><i class="fa-solid fa-check-double text-4xl mb-3 text-gray-400"></i><br>Nenhuma entrega encontrada nesta aba.</div>`;
+          return;
+        }
+
+        listaFiltrada.forEach((entrega) => {
+          let statusOriginal = entrega.status_danfe
+            ? entrega.status_danfe
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim()
+            : "pendente";
+          let isEntregue = statusOriginal === "entrega concluida";
+          let id = entrega.id_entrega || "";
+
+          const bordaCor = isEntregue
+            ? "border-l-emerald-400"
+            : "border-l-orange-400";
+          const fundoCor = isEntregue ? "bg-slate-50 opacity-90" : "bg-white";
+
+          let badgeClass = "";
+          let textoStatus = "";
+
+          if (statusOriginal === "pendente") {
+            badgeClass = "bg-orange-100 text-orange-700 border-orange-200";
+            textoStatus = "Pendente";
+          } else if (isEntregue) {
+            badgeClass = "bg-emerald-100 text-emerald-700 border-emerald-200";
+            textoStatus = "Entregue";
+          } else {
+            badgeClass = "bg-gray-100 text-gray-700 border-gray-200";
+            textoStatus = entrega.status_danfe.toUpperCase();
+          }
+
+          const nomeDestinatario = entrega.nome_destinatario || "Cliente";
+          const endereco = entrega.logradouro || "Endereço não informado";
+          const bairro = entrega.bairro_distrito || "";
+          const dataHoraEntrega =
+            entrega.Data_Hora_Entrega || entrega.data_hora_entrega || "";
+
+          container.innerHTML += `
+                    <div class="${fundoCor} rounded-xl shadow-sm border border-gray-200 border-l-4 ${bordaCor} p-4 transition-all mb-4">
+                        <div class="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
+                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-2.5 py-1 rounded-md border border-gray-200 shadow-sm"><i class="fa-solid fa-file-invoice mr-1"></i> ${entrega.numero_danfe || "S/N"}</span>
+                            <span class="${badgeClass} text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide border">${textoStatus}</span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h3 class="font-bold text-slate-800 text-[15px] mb-1.5">${nomeDestinatario}</h3>
+                            <p class="text-xs text-gray-500 mb-1 leading-relaxed"><i class="fa-solid fa-location-dot text-gray-400 w-4 text-center mr-1"></i> ${bairro || "-"}</p>
+                            <p class="text-xs text-gray-500 leading-relaxed line-clamp-2"><i class="fa-solid fa-map text-gray-400 w-4 text-center mr-1"></i> ${endereco}</p>
+                            
+                            ${
+                              isEntregue && dataHoraEntrega
+                                ? `
+                                <div class="mt-3 bg-emerald-100/50 border border-emerald-200 rounded p-2 flex items-center gap-2">
+                                    <i class="fa-solid fa-clock text-emerald-500"></i>
+                                    <span class="text-xs font-bold text-emerald-700">Baixa em: ${dataHoraEntrega}</span>
+                                </div>
+                            `
+                                : ""
+                            }
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <button onclick="abrirNavegacao('${id}')" class="bg-slate-100 hover:bg-slate-200 text-blue-600 border border-slate-200 text-sm font-bold py-2.5 rounded-lg shadow-sm transition-colors flex justify-center items-center gap-2 active:scale-95"><i class="fa-solid fa-location-arrow"></i> Navegar</button>
+                            
+                            ${
+                              !isEntregue
+                                ? `
+                                <button onclick="carregarDetalhes(this, '${id}')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2.5 rounded-lg shadow-sm transition-colors flex justify-center items-center gap-2 relative active:scale-95">
+                                    <span class="btn-text">Detalhes</span>
+                                    <svg class="hidden animate-spin h-5 w-5 text-white btn-spinner absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </button>
+                            `
+                                : `
+                                <button disabled class="bg-gray-200 text-gray-500 text-sm font-bold py-2.5 rounded-lg cursor-not-allowed flex justify-center items-center gap-2"><i class="fa-solid fa-check"></i> Concluído</button>
+                            `
+                            }
+                        </div>
+                    </div>`;
+        });
+      }
+
+      function configurarBotoesFiltro() {
+        const btnTotal = document.getElementById("btn-filtro-total");
+        const btnPendentes = document.getElementById("btn-filtro-pendentes");
+        const btnEntregues = document.getElementById("btn-filtro-entregues");
+        const tituloRota = document.getElementById("titulo-rota");
+
+        function limparFiltrosAtivos() {
+          [btnTotal, btnPendentes, btnEntregues].forEach((btn) => {
+            btn.className =
+              "cursor-pointer bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm transition-transform active:scale-95";
+            btn.querySelector("span:first-child").className =
+              "block text-2xl font-bold text-slate-700";
+            btn.querySelector("span:last-child").className =
+              "text-[10px] font-bold text-gray-400 tracking-wider";
+          });
+        }
+
+        function setFiltroAtivo(btn) {
+          limparFiltrosAtivos();
+          btn.className =
+            "cursor-pointer bg-blue-50 border border-blue-300 rounded-xl p-3 text-center shadow-sm transition-transform active:scale-95";
+          btn.querySelector("span:first-child").className =
+            "block text-2xl font-bold text-blue-600";
+          btn.querySelector("span:last-child").className =
+            "text-[10px] font-bold text-blue-500 tracking-wider";
+        }
+
+        btnTotal.addEventListener("click", function () {
+          setFiltroAtivo(this);
+          filtroAtual = "total";
+          tituloRota.innerText = "Sua Rota de Hoje (Total)";
+          renderizarLista();
+        });
+        btnPendentes.addEventListener("click", function () {
+          setFiltroAtivo(this);
+          filtroAtual = "pendentes";
+          tituloRota.innerText = "Sua Rota de Hoje (Pendentes)";
+          renderizarLista();
+        });
+        btnEntregues.addEventListener("click", function () {
+          setFiltroAtivo(this);
+          filtroAtual = "entregues";
+          tituloRota.innerText = "Sua Rota de Hoje (Entregues)";
+          renderizarLista();
+        });
+      }
+
+      function abrirNavegacao(id) {
+        const entrega = pacotesDoDia.find((e) => e.id_entrega === id);
+        if (!entrega) return;
+        const linkOuEndereco =
+          entrega.url_maps ||
+          (entrega.logradouro || "") + ", " + (entrega.bairro_distrito || "");
+        if (linkOuEndereco.startsWith("http"))
+          window.open(linkOuEndereco, "_blank");
+        else
+          window.open(
+            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(linkOuEndereco)}`,
+            "_blank",
+          );
+      }
+
+      function carregarDetalhes(btnElement, id) {
+        if (btnElement.disabled) return;
+        const textSpan = btnElement.querySelector(".btn-text");
+        const spinnerSVG = btnElement.querySelector(".btn-spinner");
+
+        btnElement.disabled = true;
+        btnElement.classList.replace("bg-blue-600", "bg-blue-400");
+        textSpan.classList.add("invisible");
+        spinnerSVG.classList.remove("hidden");
+
+        setTimeout(() => {
+          abrirDetalhes(id);
+          btnElement.disabled = false;
+          btnElement.classList.replace("bg-blue-400", "bg-blue-600");
+          textSpan.classList.remove("invisible");
+          spinnerSVG.classList.add("hidden");
+        }, 600);
+      }
+
+      function abrirDetalhes(id) {
+        const entrega = pacotesDoDia.find((e) => e.id_entrega === id);
+        Swal.fire({
+          title: `Pedido: ${id}`,
+          html: `
+                    <div style="text-align: left; font-size: 14px; color: #334155;">
+                        <p class="mb-2"><strong class="text-slate-800">Destinatário:</strong><br>${entrega?.nome_destinatario || "Não informado"}</p>
+                        <p class="mb-4"><strong class="text-slate-800">Endereço:</strong><br>${entrega?.logradouro || "Não informado"}</p>
+                        <hr class="border-gray-200">
+                        <p style="text-align: center; margin-top: 15px; font-weight: 500;">Deseja confirmar a entrega deste pedido?</p>
+                    </div>
+                `,
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#2563eb",
+          cancelButtonColor: "#ef4444",
+          confirmButtonText: '<i class="fas fa-camera mr-1"></i> Tirar Foto',
+          cancelButtonText: "Fechar",
+          customClass: { popup: "rounded-xl" },
+        }).then((result) => {
+          if (result.isConfirmed) abrirModalFoto(id);
+        });
+      }
+
+      function abrirModalFoto(id) {
+        Swal.fire({
+          title: "Comprovante",
+          html: `<p class="text-sm text-gray-500 mb-4">Tire uma foto do canhoto assinado ou do local da entrega.</p><input type="file" id="foto-comprovante" accept="image/*" capture="environment" class="w-full border border-gray-300 p-2 rounded-lg bg-gray-50 focus:outline-none focus:border-blue-500">`,
+          showCancelButton: true,
+          confirmButtonColor: "#10b981",
+          cancelButtonColor: "#ef4444",
+          confirmButtonText:
+            '<i class="fas fa-paper-plane mr-1"></i> Enviar Baixa',
+          cancelButtonText: "Cancelar",
+          customClass: { popup: "rounded-xl" },
+          preConfirm: () => {
+            const fileInput = document.getElementById("foto-comprovante");
+            if (!fileInput.files || fileInput.files.length === 0) {
+              Swal.showValidationMessage("Você precisa anexar uma foto!");
+              return false;
+            }
+            return fileInput.files[0];
+          },
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Processando foto...",
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading(),
+            });
+            try {
+              const base64Foto = await comprimirEConverterParaBase64(
+                result.value,
+              );
+              await enviarBaixaN8N(id, base64Foto);
+            } catch (erro) {
+              Swal.fire("Erro!", "Falha ao processar imagem.", "error");
+            }
+          }
+        });
+      }
+
+      function comprimirEConverterParaBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              const MAX_WIDTH = 800,
+                MAX_HEIGHT = 800;
+              let width = img.width,
+                height = img.height;
+              if (width > height) {
+                if (width > MAX_WIDTH) {
+                  height *= MAX_WIDTH / width;
+                  width = MAX_WIDTH;
+                }
+              } else {
+                if (height > MAX_HEIGHT) {
+                  width *= MAX_HEIGHT / height;
+                  height = MAX_HEIGHT;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL("image/jpeg", 0.7).split(",")[1]);
+            };
+          };
+          reader.onerror = (error) => reject(error);
+        });
+      }
+
+      async function enviarBaixaN8N(id, fotoBase64) {
+        const payload = {
+          origem: "app_motorista_v2",
+          acao: "confirmar_entrega",
+          motorista: dadosSessao.nome,
+          id_entrega: id,
+          foto_comprovante: fotoBase64,
+        };
+
+        // LÓGICA OFFLINE
+        if (!navigator.onLine) {
+          let fila = JSON.parse(localStorage.getItem("fila_offline") || "[]");
+          fila.push(payload);
+          localStorage.setItem("fila_offline", JSON.stringify(fila));
+
+          let index = pacotesDoDia.findIndex((p) => p.id_entrega === id);
+          if (index > -1) {
+            pacotesDoDia[index].status_danfe = "ENTREGA CONCLUÍDA";
+            const agora = new Date();
+            pacotesDoDia[index].Data_Hora_Entrega =
+              `${agora.getDate().toString().padStart(2, "0")}/${(agora.getMonth() + 1).toString().padStart(2, "0")}/${agora.getFullYear()} ${agora.getHours().toString().padStart(2, "0")}:${agora.getMinutes().toString().padStart(2, "0")} (Offline)`;
+          }
+
+          localStorage.setItem(
+            "cache_rotas_hoje",
+            JSON.stringify(pacotesDoDia),
+          );
+          atualizarContadores();
+          renderizarLista();
+
+          Swal.fire({
+            title: "Salvo no Celular!",
+            text: "Baixa registrada. Será enviada automaticamente quando a internet voltar.",
+            icon: "info",
+            customClass: { popup: "rounded-xl" },
+          });
+          return;
+        }
+
+        // LÓGICA ONLINE
+        Swal.fire({
+          title: "Enviando baixa...",
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+        });
+        try {
+          await fetch(API_WEBHOOK_N8N, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          Swal.fire({
+            title: "Sucesso!",
+            text: "Baixa processada no servidor.",
+            icon: "success",
+            timer: 1500,
+          });
+          buscarEntregasDoN8N();
+        } catch (e) {
+          console.error("Erro na API:", e);
+          Swal.fire("Erro", "Não foi possível conectar ao servidor.", "error");
+        }
+      }
+
+      async function sincronizarFilaOffline() {
+        document.getElementById("badge-offline").classList.add("hidden");
+        let fila = JSON.parse(localStorage.getItem("fila_offline") || "[]");
+
+        if (fila.length > 0) {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            title: "Conexão restabelecida. Sincronizando baixas...",
+            showConfirmButton: false,
+            timerProgressBar: true,
+          });
+          let filaRestante = [];
+          for (let payload of fila) {
+            try {
+              await fetch(API_WEBHOOK_N8N, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+            } catch (e) {
+              filaRestante.push(payload);
+            }
+          }
+          localStorage.setItem("fila_offline", JSON.stringify(filaRestante));
+          if (filaRestante.length === 0) {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "Todas as entregas sincronizadas!",
+              showConfirmButton: false,
+              timer: 3000,
+            });
+            buscarEntregasDoN8N();
+          }
+        }
+      }
+
+      Pusher.logToConsole = true;
+      const pusher = new Pusher("1e0d9e51d0a6ce445280", {
+        cluster: "sa1",
+        forceTLS: true,
+      });
+      const channel = pusher.subscribe("pedidos-de-entregas");
+      channel.bind("atualizar-painel", function (data) {
+        let payload = typeof data === "string" ? JSON.parse(data) : data;
+        if (payload.acao === "recarregar") {
+          Swal.fire({
+            title: "Atualização Recebida!",
+            html: '<p class="text-gray-500 text-sm mt-2">Sincronizando as entregas da sua rota...</p>',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            customClass: { popup: "rounded-xl" },
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+          setTimeout(() => {
+            buscarEntregasDoN8N(true);
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
+</html>
