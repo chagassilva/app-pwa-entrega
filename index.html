@@ -42,42 +42,52 @@
     <!-- ==========================================
          TELA DE LOGIN (DESIGN PREMIUM)
     =========================================== -->
+    <!-- ==========================================
+         TELA DE LOGIN (DESIGN MOBILE FIRST)
+    =========================================== -->
     <div
       id="tela-login"
-      class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 relative overflow-hidden"
+      class="min-h-[100dvh] flex flex-col justify-center bg-slate-50 relative overflow-hidden"
     >
-      <!-- Efeitos de luz no fundo (Ambient Glow) -->
+      <!-- Fundo Superior Decorativo -->
       <div
-        class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-30"
-      ></div>
-      <div
-        class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-emerald-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20"
-      ></div>
-
-      <!-- Cartão de Login -->
-      <div
-        class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl w-full max-w-md text-center relative z-10 border border-slate-100"
+        class="absolute top-0 w-full h-64 bg-gradient-to-br from-blue-700 via-blue-800 to-slate-900 rounded-b-[40px] shadow-inner"
       >
-        <!-- Logo Oficial TLD -->
-        <div class="mx-auto mb-6 flex justify-center">
+        <!-- Efeito de luz sutil -->
+        <div
+          class="absolute top-[-20%] left-[-10%] w-64 h-64 bg-blue-500 rounded-full mix-blend-screen filter blur-[80px] opacity-30"
+        ></div>
+      </div>
+
+      <!-- Cartão de Login (Sobreposto) -->
+      <div
+        class="bg-white p-6 sm:p-10 rounded-[32px] shadow-xl w-[90%] max-w-md mx-auto text-center relative z-10 border border-slate-100 mt-12"
+      >
+        <!-- Logo Flutuante (Efeito 3D quebrando a borda) -->
+        <div
+          class="mx-auto mb-2 flex justify-center bg-white p-4 rounded-3xl shadow-sm border border-slate-50 w-max transform -translate-y-16"
+        >
           <img
             src="https://portfolio.chagassilva.com/wp-content/uploads/2026/02/logo_sem_background.png"
             alt="TLD Distribuidora"
-            class="h-16 object-contain drop-shadow-md"
+            class="h-14 w-auto object-contain drop-shadow-sm"
           />
         </div>
 
-        <h1 class="text-2xl font-black text-slate-800 mb-2 tracking-tight">
-          Portal do Motorista
-        </h1>
-        <p class="text-sm text-slate-500 mb-8 font-medium">
-          Faça login para acessar sua rota de hoje
-        </p>
+        <!-- Título ajustado pela margem negativa da logo -->
+        <div class="-mt-10 mb-8">
+          <h1 class="text-[26px] font-black text-slate-800 tracking-tight">
+            Bem-vindo(a)
+          </h1>
+          <p class="text-sm text-slate-500 font-medium mt-1">
+            Acesse sua rota de hoje
+          </p>
+        </div>
 
         <!-- Input: Nome do Motorista -->
         <div class="text-left mb-5 relative">
           <label
-            class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1"
+            class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2"
             >Selecione seu nome</label
           >
           <div class="relative">
@@ -86,17 +96,18 @@
             >
               <i class="fa-solid fa-user text-slate-400"></i>
             </div>
+            <!-- text-base é vital no mobile para evitar auto-zoom -->
             <select
               id="select-motorista"
-              class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3.5 pl-11 outline-none transition-all appearance-none"
+              class="w-full bg-slate-50/50 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-10 outline-none transition-all appearance-none text-base"
             >
               <option value="" disabled selected>Buscando motoristas...</option>
             </select>
-            <!-- Ícone customizado da setinha do Select -->
+            <!-- Setinha Customizada -->
             <div
               class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"
             >
-              <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+              <i class="fa-solid fa-chevron-down text-slate-400 text-sm"></i>
             </div>
           </div>
         </div>
@@ -104,7 +115,7 @@
         <!-- Input: Senha -->
         <div class="text-left mb-8 relative">
           <label
-            class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1"
+            class="block text-[11px] font-extrabold text-slate-400 uppercase tracking-widest mb-2 ml-2"
             >Senha de acesso</label
           >
           <div class="relative">
@@ -117,7 +128,7 @@
               type="password"
               id="input-senha"
               placeholder="••••••••"
-              class="w-full bg-slate-50 border border-slate-200 text-slate-700 font-semibold rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3.5 pl-11 outline-none transition-all"
+              class="w-full bg-slate-50/50 border border-slate-200 text-slate-800 font-bold rounded-2xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block py-4 pl-12 pr-4 outline-none transition-all text-base tracking-[0.2em]"
             />
           </div>
         </div>
@@ -125,10 +136,19 @@
         <!-- Botão de Acesso -->
         <button
           onclick="fazerLogin()"
-          class="w-full text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 font-bold rounded-xl text-lg px-5 py-4 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.98] flex items-center justify-center gap-2"
+          class="w-full text-white bg-blue-600 hover:bg-blue-700 font-bold rounded-2xl text-[17px] px-5 py-4.5 text-center transition-all shadow-lg hover:shadow-blue-600/30 active:scale-[0.97] flex items-center justify-center gap-2 h-14"
         >
-          Acessar Minha Rota <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          Entrar na Rota <i class="fa-solid fa-arrow-right ml-1"></i>
         </button>
+      </div>
+
+      <!-- Rodapé do App -->
+      <div class="text-center mt-8 relative z-10 pb-6">
+        <p
+          class="text-[11px] text-slate-400 font-bold uppercase tracking-widest"
+        >
+          Hub TLD &copy; 2026
+        </p>
       </div>
     </div>
 
